@@ -257,7 +257,7 @@ pub struct AllocatedResources {
 #[serde(rename_all = "camelCase")]
 pub struct Shared {
     #[serde(rename = "DiskMB")]
-    pub disk_mb: i64,
+    pub disk_mb: Option<i64>,
     #[serde(rename = "Networks")]
     #[serde(default)]
     pub networks: Vec<Network>,
@@ -709,7 +709,7 @@ pub struct Metrics {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DimensionExhausted {
-    pub disk: i64,
+    pub disk: Option<i64>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -784,7 +784,7 @@ pub struct SharedResources {
     #[serde(default)]
     pub devices: Option<Vec<SharedDevice>>,
     #[serde(rename = "DiskMB")]
-    pub disk_mb: Option<i64>,
+    pub disk_mb: i64,
     #[serde(rename = "IOPS")]
     pub iops: Option<i64>,
     #[serde(rename = "Memory")]
