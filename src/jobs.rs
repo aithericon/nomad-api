@@ -763,7 +763,7 @@ pub struct Resources {
     #[serde(default)]
     pub devices: Option<Vec<Device>>,
     #[serde(rename = "DiskMB")]
-    pub disk_mb: i64,
+    pub disk_mb: Option<i64>,
     #[serde(rename = "IOPS")]
     pub iops: i64,
     #[serde(rename = "MemoryMB")]
@@ -784,7 +784,7 @@ pub struct SharedResources {
     #[serde(default)]
     pub devices: Option<Vec<SharedDevice>>,
     #[serde(rename = "DiskMB")]
-    pub disk_mb: i64,
+    pub disk_mb: Option<i64>,
     #[serde(rename = "IOPS")]
     pub iops: Option<i64>,
     #[serde(rename = "Memory")]

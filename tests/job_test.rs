@@ -21,9 +21,9 @@ mod tests {
 
     #[tokio::test]
     async fn read_allocation() {
-        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
+        let client = NomadClient::new("http://127.0.0.1:7777".to_string(), "".to_string());
         let allocation = client
-            .read_allocation("46245ff0-7d07-366c-5b0f-35d2929e9288")
+            .read_allocation("bfc47b74-8cd4-2b16-ef93-c3bed24f54bf")
             .await;
         println!("{:?}", &allocation);
         allocation.unwrap();
