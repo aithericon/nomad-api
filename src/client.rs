@@ -1,4 +1,4 @@
-use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse};
+use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse};
 use log::{debug, error, info, warn, trace};
 use reqwest::Client;
 use std::collections::HashMap;
@@ -33,6 +33,24 @@ impl NomadClient {
             .send()
             .await?
             .json::<Vec<Job>>()
+            .await?;
+        Ok(response)
+    }
+
+    /// https://www.nomadproject.io/api-docs/jobs#stop-a-job
+    /// This endpoint deregisters a job, and stops all allocations part of it.
+    /// Method	    Path	            Produces
+    /// DELETE	    /v1/job/:job_id	    application/json
+    pub async fn stop_job(&self, job_id: &str) -> Result<JobStopResponse, reqwest::Error> {
+        let url = format!("{}/v1/job/{}", &self.base_url, job_id);
+        trace!("Stop job {} call to {}", &url, job_id);
+        let response = self
+            .http_client
+            .delete(&url)
+            .header("X-Nomad-Token", &self.authorization_token)
+            .send()
+            .await?
+            .json::<JobStopResponse>()
             .await?;
         Ok(response)
     }

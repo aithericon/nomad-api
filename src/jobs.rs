@@ -49,6 +49,7 @@ pub struct DispatchJobRequest {
     pub meta: HashMap<String, String>,
 }
 
+
 /// Sample Response:
 /// ```
 /// {
@@ -71,6 +72,15 @@ pub struct DispatchJobResponse {
     pub eval_id: Option<String>,
     #[serde(rename = "DispatchedJobID")]
     pub dispatched_job_id: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct JobStopResponse {
+    #[serde(rename = "EvalID")]
+    pub eval_id: String,
+    pub eval_create_index: u32,
+    pub job_modify_index: u32,
 }
 
 /// https://www.nomadproject.io/api-docs/jobs#list-job-allocations

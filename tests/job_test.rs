@@ -8,7 +8,11 @@ mod tests {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let list_nodes_response = client.list_jobs().await;
         println!("{:?}", &list_nodes_response);
-        list_nodes_response.unwrap();
+        for job in list_nodes_response.unwrap() {
+           println!("Stopping job with id {}", &job.id);
+           client.stop_job(&job.id) .await.unwrap();
+        }
+        // list_nodes_response.unwrap();
     }
 
     #[tokio::test]
@@ -21,15 +25,15 @@ mod tests {
 
     #[tokio::test]
     async fn read_allocation() {
-        let client = NomadClient::new("http://127.0.0.1:7777".to_string(), "".to_string());
+        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let allocation = client
-            .read_allocation("bfc47b74-8cd4-2b16-ef93-c3bed24f54bf")
+            .read_allocation("30cd7ef8-cd5c-e950-2ce5-e512fdcdd551")
             .await;
         println!("{:?}", &allocation);
         allocation.unwrap();
     }
 
-    #[tokio::test]
+    // #[tokio::test]
     async fn dispatch_job() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let payload = None;
