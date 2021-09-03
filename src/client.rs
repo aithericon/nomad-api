@@ -1,4 +1,4 @@
-use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse};
+use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse, ParseJobPayload};
 use log::{debug, error, info, warn, trace};
 use reqwest::Client;
 use std::collections::HashMap;
@@ -124,6 +124,43 @@ impl NomadClient {
 
         let response = response.json::<DispatchJobResponse>()
            .await?;
+
+        Ok(response)
+    }
+
+    /// Parse Job
+    //
+    // This endpoint will parse a HCL jobspec and produce the equivalent JSON encoded job.
+    // Method	Path	Produces
+    // POST	/v1/jobs/parse	application/json
+    //
+    // The table below shows this endpoint's support for blocking queries and required ACLs.
+    // Blocking Queries	ACL Required
+    // NO	none
+    // »Parameters
+    //
+    //     JobHCL (string: <required>) - Specifies the HCL definition of the job encoded in a JSON string.
+    //     Canonicalize (bool: false) - Flag to enable setting any unset fields to their default values.
+    pub async fn parse_job(&self, hcl: &str, canonicalize: bool) -> Result<Job, reqwest::Error> {
+
+        let url = format!("{}/v1/job/parse", &self.base_url);
+        trace!("Parse job call to {}", &url);
+        let request = ParseJobPayload {
+            job_hcl: hcl.to_string(),
+            canonicalize,
+        };
+        let test = serde_json::to_string(&request).unwrap();
+        // trace!("{}", test);
+        let response = self
+            .http_client
+            .post(&url)
+            .header("X-Nomad-Token", &self.authorization_token)
+            .json(&request)
+            .send()
+            .await?;
+
+        let response = response.json::<Job>()
+            .await?;
 
         Ok(response)
     }

@@ -33,7 +33,7 @@ mod tests {
         allocation.unwrap();
     }
 
-    #[tokio::test]
+    // #[tokio::test]
     async fn dispatch_job() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let payload = None;
@@ -45,24 +45,6 @@ mod tests {
         meta.insert("numpire_node_id".to_string(), "1".to_string());
         let dispatch_result = client
             .dispatch_job("numpire-worker-gpu", payload, meta)
-            .await;
-        println!("{:?}", &dispatch_result);
-        dispatch_result.unwrap();
-    }
-
-    // #[tokio::test]
-    async fn dispatch_job2() {
-        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
-        let payload = None;
-        let mut meta = HashMap::new();
-        meta.insert(
-            "blink".to_string(),
-            "127.0.0.1:4444".to_string(),
-        );
-        meta.insert("baddr".to_string(), "0x".to_string());
-        meta.insert("idle_image".to_string(), "ahtonen/docker-ethminer".to_string());
-        let dispatch_result = client
-            .dispatch_job("idle-worker-gpu", payload, meta)
             .await;
         println!("{:?}", &dispatch_result);
         dispatch_result.unwrap();

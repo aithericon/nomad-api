@@ -25,6 +25,7 @@ pub enum RunningStatus {
     #[serde(alias = "dead")]
     Dead,
 }
+
 impl Default for RunningStatus {
     fn default() -> Self {
         RunningStatus::Pending
@@ -895,4 +896,13 @@ pub struct Details {
     pub signal: Option<String>,
     #[serde(rename = "start_delay")]
     pub start_delay: Option<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ParseJobPayload {
+    #[serde(rename = "JobHCL")]
+    pub job_hcl: String,
+    pub canonicalize: bool
+
 }
