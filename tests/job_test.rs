@@ -2,6 +2,7 @@
 mod tests {
     use nomad_api::client::NomadClient;
     use std::collections::HashMap;
+    use std::path::{PathBuf, Path};
 
     #[tokio::test]
     async fn list_jobs() {
@@ -66,5 +67,25 @@ mod tests {
             .await;
         println!("{:?}", &dispatch_result);
         dispatch_result.unwrap();
+    }
+    #[tokio::test]
+    async fn parse_job() {
+        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
+        let hcl_file = std::fs::read_to_string(Path::new("tests/assets/worker-param-gpu.nomad")).unwrap();
+        let job = client.parse_job(&hcl_file, true).await;
+        println!("{:?}", &job);
+        assert!(job.is_ok());
+    }
+
+    #[tokio::test]
+    async fn create_job() {
+        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
+        let hcl_file = std::fs::read_to_string(Path::new("tests/assets/worker-param-gpu.nomad")).unwrap();
+        let job = client.parse_job(&hcl_file, true).await;
+        assert!(job.is_ok());
+        let resp = client.create_job(&job.unwrap()).await;
+
+        println!("{:?}", &resp);
+        assert!(resp.is_ok());
     }
 }

@@ -1,4 +1,4 @@
-use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse, ParseJobPayload};
+use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse, ParseJobPayload, CreateJobResponse, CreateJobRequest};
 use log::{debug, error, info, warn, trace};
 use reqwest::Client;
 use std::collections::HashMap;
@@ -129,28 +129,28 @@ impl NomadClient {
     }
 
     /// Parse Job
-    //
-    // This endpoint will parse a HCL jobspec and produce the equivalent JSON encoded job.
-    // Method	Path	Produces
-    // POST	/v1/jobs/parse	application/json
-    //
-    // The table below shows this endpoint's support for blocking queries and required ACLs.
-    // Blocking Queries	ACL Required
-    // NO	none
-    // »Parameters
-    //
-    //     JobHCL (string: <required>) - Specifies the HCL definition of the job encoded in a JSON string.
-    //     Canonicalize (bool: false) - Flag to enable setting any unset fields to their default values.
+    ///
+    /// This endpoint will parse a HCL jobspec and produce the equivalent JSON encoded job.
+    /// Method	Path	Produces
+    /// POST	/v1/jobs/parse	application/json
+    ///
+    /// The table below shows this endpoint's support for blocking queries and required ACLs.
+    /// Blocking Queries	ACL Required
+    /// NO	none
+    /// »Parameters
+    ///
+    ///     JobHCL (string: <required>) - Specifies the HCL definition of the job encoded in a JSON string.
+    ///     Canonicalize (bool: false) - Flag to enable setting any unset fields to their default values.
     pub async fn parse_job(&self, hcl: &str, canonicalize: bool) -> Result<Job, reqwest::Error> {
 
-        let url = format!("{}/v1/job/parse", &self.base_url);
+        let url = format!("{}/v1/jobs/parse", &self.base_url);
         trace!("Parse job call to {}", &url);
         let request = ParseJobPayload {
             job_hcl: hcl.to_string(),
             canonicalize,
         };
-        let test = serde_json::to_string(&request).unwrap();
-        // trace!("{}", test);
+        // let test = serde_json::to_string(&request).unwrap();
+        // println!("{}", test);
         let response = self
             .http_client
             .post(&url)
@@ -158,10 +158,56 @@ impl NomadClient {
             .json(&request)
             .send()
             .await?;
-
+        debug!("Response: {:?}", &response);
         let response = response.json::<Job>()
             .await?;
 
         Ok(response)
+    }
+
+    /// Create Job
+    ///
+    /// This endpoint creates (aka "registers") a new job in the system.
+    /// Method	Path	Produces
+    /// POST	/v1/jobs	application/json
+    ///
+    /// The table below shows this endpoint's support for blocking queries and required ACLs.
+    /// Blocking Queries	ACL Required
+    /// NO	namespace:submit-job
+    /// namespace:sentinel-override if PolicyOverride set
+    /// »Parameters
+    ///
+    ///     Job (Job: <required>) - Specifies the JSON definition of the job.
+    ///
+    ///     EnforceIndex (bool: false) - If set, the job will only be registered if the passed JobModifyIndex matches the current job's index. If the index is zero, the register only occurs if the job is new. This paradigm allows check-and-set style job updating.
+    ///
+    ///     JobModifyIndex (int: 0) - Specifies the JobModifyIndex to enforce the current job is at.
+    ///
+    ///     PolicyOverride (bool: false) - If set, any soft mandatory Sentinel policies will be overridden. This allows a job to be registered when it would be denied by policy.
+    ///
+    ///     PreserveCounts (bool: false) - If set, existing task group counts are preserved, over those specified in the new job spec.
+    pub async fn create_job(&self, job: &Job) -> Result<CreateJobResponse, reqwest::Error> {
+        let url = format!("{}/v1/jobs", &self.base_url);
+        trace!("Parse job call to {}", &url);
+        let request = CreateJobRequest {
+            job: job.clone(),
+        };
+
+        let test = serde_json::to_string(&request).unwrap();
+        println!("{}", test);
+        let response = self
+            .http_client
+            .post(&url)
+            .header("X-Nomad-Token", &self.authorization_token)
+            .json(&request)
+            .send()
+            .await?;
+        info!("Response: {:?}", &response);
+        println!("Response: {:?}", &response);
+        let response = response.json::<CreateJobResponse>()
+            .await?;
+
+        Ok(response)
+
     }
 }

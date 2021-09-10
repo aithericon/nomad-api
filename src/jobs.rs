@@ -24,6 +24,8 @@ pub enum RunningStatus {
     Pending,
     #[serde(alias = "dead")]
     Dead,
+    #[serde(alias = "")]
+    Missing,
 }
 
 impl Default for RunningStatus {
@@ -292,7 +294,7 @@ pub struct Network {
     #[serde(rename = "IP")]
     pub ip: String,
     #[serde(rename = "MBits")]
-    pub mbits: i64,
+    pub mbits: Option<i64>,
     #[serde(rename = "Mode")]
     pub mode: String,
     #[serde(rename = "ReservedPorts")]
@@ -424,13 +426,13 @@ pub struct Job {
     #[serde(rename = "Stable")]
     pub stable: Option<bool>,
     #[serde(rename = "Status")]
-    pub status: RunningStatus,
+    pub status: Option<RunningStatus>,
     #[serde(rename = "StatusDescription")]
     pub status_description: Option<String>,
     #[serde(rename = "Stop")]
     pub stop: bool,
     #[serde(rename = "SubmitTime")]
-    pub submit_time: i64,
+    pub submit_time: Option<i64>,
     #[serde(rename = "TaskGroups")]
     pub task_groups: Option<Vec<TaskGroup>>,
     #[serde(rename = "Type")]
@@ -443,6 +445,32 @@ pub struct Job {
     pub vault_token: Option<String>,
     #[serde(rename = "Version")]
     pub version: Option<i64>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct CreateJobRequest {
+    pub job: Job,
+}
+
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateJobResponse {
+    #[serde(rename = "EvalID")]
+    pub eval_id: String,
+    #[serde(rename = "EvalCreateIndex")]
+    pub eval_create_index: i64,
+    #[serde(rename = "JobModifyIndex")]
+    pub job_modify_index: i64,
+    #[serde(rename = "Warnings")]
+    pub warnings: String,
+    #[serde(rename = "Index")]
+    pub index: i64,
+    #[serde(rename = "LastContact")]
+    pub last_contact: i64,
+    #[serde(rename = "KnownLeader")]
+    pub known_leader: bool,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -776,11 +804,11 @@ pub struct Resources {
     #[serde(rename = "DiskMB")]
     pub disk_mb: Option<i64>,
     #[serde(rename = "IOPS")]
-    pub iops: i64,
+    pub iops: Option<i64>,
     #[serde(rename = "MemoryMB")]
     pub memory_mb: i64,
     #[serde(rename = "MemoryMaxMB")]
-    pub memory_max_mb: i64,
+    pub memory_max_mb: Option<i64>,
     #[serde(rename = "Networks")]
     #[serde(default)]
     pub networks: Option<Vec<Network>>,

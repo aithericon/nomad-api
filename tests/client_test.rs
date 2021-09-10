@@ -3,7 +3,6 @@ mod tests {
     use nomad_api::client::NomadClient;
     use std::collections::HashMap;
 
-    #[tokio::test]
     async fn list_jobs() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let list_nodes_response = client.list_jobs().await;
@@ -15,7 +14,6 @@ mod tests {
         // list_nodes_response.unwrap();
     }
 
-    #[tokio::test]
     async fn list_job_allocations() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let list_job_allocations_response = client.list_job_allocations("numpire-worker-gpu/dispatch-1626361554-dc6a23ac").await;
@@ -23,7 +21,6 @@ mod tests {
         list_job_allocations_response.unwrap();
     }
 
-    #[tokio::test]
     async fn read_allocation() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
         let allocation = client
