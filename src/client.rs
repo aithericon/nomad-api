@@ -142,7 +142,6 @@ impl NomadClient {
     ///     JobHCL (string: <required>) - Specifies the HCL definition of the job encoded in a JSON string.
     ///     Canonicalize (bool: false) - Flag to enable setting any unset fields to their default values.
     pub async fn parse_job(&self, hcl: &str, canonicalize: bool) -> Result<Job, reqwest::Error> {
-
         let url = format!("{}/v1/jobs/parse", &self.base_url);
         trace!("Parse job call to {}", &url);
         let request = ParseJobPayload {

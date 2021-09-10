@@ -426,7 +426,7 @@ pub struct Job {
     #[serde(rename = "Stable")]
     pub stable: Option<bool>,
     #[serde(rename = "Status")]
-    pub status: Option<RunningStatus>,
+    pub status: RunningStatus,
     #[serde(rename = "StatusDescription")]
     pub status_description: Option<String>,
     #[serde(rename = "Stop")]
