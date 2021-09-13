@@ -597,7 +597,7 @@ pub struct Task {
     #[serde(rename = "Driver")]
     pub driver: String,
     #[serde(rename = "Env")]
-    pub env: Env,
+    pub env: Option<HashMap<String, String>>,
     #[serde(rename = "KillSignal")]
     pub kill_signal: String,
     #[serde(rename = "KillTimeout")]
@@ -642,15 +642,6 @@ pub struct Config {
     pub network_mode: String,
     #[serde(default)]
     pub ports: Option<Vec<String>>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Env {
-    #[serde(rename = "LISTEN_ADDR")]
-    pub listen_addr: String,
-    #[serde(rename = "MASTER_ADDR")]
-    pub master_addr: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
