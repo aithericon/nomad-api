@@ -639,7 +639,7 @@ pub struct Task {
 pub struct Config {
     pub image: String,
     #[serde(rename = "network_mode")]
-    pub network_mode: String,
+    pub network_mode: Option<String>,
     #[serde(default)]
     pub ports: Option<Vec<String>>,
 }

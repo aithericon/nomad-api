@@ -89,7 +89,7 @@ impl NomadClient {
             .header("X-Nomad-Token", &self.authorization_token)
             .send()
             .await?;
-        info!("ReadAllocation: {:?}", &response);
+        // info!("ReadAllocation: {:?}", &response);
         let response = response.json::<Allocation>()
             .await?;
         Ok(response)
