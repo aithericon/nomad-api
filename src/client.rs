@@ -88,8 +88,9 @@ impl NomadClient {
             .get(&url)
             .header("X-Nomad-Token", &self.authorization_token)
             .send()
-            .await?
-            .json::<Allocation>()
+            .await?;
+        info!("ReadAllocation: {:?}", &response);
+        let response = response.json::<Allocation>()
             .await?;
         Ok(response)
     }
@@ -113,7 +114,8 @@ impl NomadClient {
             meta,
         };
         let test = serde_json::to_string(&request).unwrap();
-        // trace!("{}", test);
+        info!("{}", test);
+        // println!("{}", test);
         let response = self
             .http_client
             .post(&url)
@@ -121,7 +123,7 @@ impl NomadClient {
             .json(&request)
             .send()
             .await?;
-
+        // println!("{:?}", &response);
         let response = response.json::<DispatchJobResponse>()
            .await?;
 

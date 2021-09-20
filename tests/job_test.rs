@@ -51,6 +51,22 @@ mod tests {
         dispatch_result.unwrap();
     }
 
+    #[tokio::test]
+    async fn dispatch_job3() {
+        let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
+        let payload = None;
+        let mut meta = HashMap::new();
+        meta.insert(
+            "numpire_image".to_string(),
+            "localhost:5000/numpire-rl-agent".to_string(),
+        );
+        let dispatch_result = client
+            .dispatch_job("numpire-agent", payload, meta)
+            .await;
+        println!("{:?}", &dispatch_result);
+        dispatch_result.unwrap();
+    }
+
     // #[tokio::test]
     async fn dispatch_job2() {
         let client = NomadClient::new("http://127.0.0.1:4646".to_string(), "".to_string());
