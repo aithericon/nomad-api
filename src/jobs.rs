@@ -1,10 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::hash::Hash;
-
+#[allow(clippy::tabs_in_doc_comments)]
 /// Create mostly with https://transform.tools/json-to-rust-serde
-
-
 
 #[derive(Debug, Eq, PartialEq, Hash, Deserialize, Serialize, Clone)]
 pub enum RunningStatus {
@@ -35,7 +33,7 @@ impl Default for RunningStatus {
 }
 
 /// https://www.nomadproject.io/api-docs/jobs#dispatch-job
-/// Method	Path	                    Produces
+/// Method	Path                    Produces
 /// POST	/v1/job/:job_id/dispatch	application/json
 ///
 /// Parameters
@@ -51,7 +49,6 @@ pub struct DispatchJobRequest {
     #[serde(rename = "Meta")]
     pub meta: HashMap<String, String>,
 }
-
 
 /// Sample Response:
 /// ```
@@ -87,8 +84,8 @@ pub struct JobStopResponse {
 }
 
 /// https://www.nomadproject.io/api-docs/jobs#list-job-allocations
-/// Method	Path	                        Produces
-/// GET	    /v1/job/:job_id/allocations	    application/json
+/// Method	Path                        Produces
+/// GET    /v1/job/:job_id/allocations    application/json
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ListJobAllocationsResponse {
@@ -452,7 +449,6 @@ pub struct Job {
 pub struct CreateJobRequest {
     pub job: Job,
 }
-
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -922,6 +918,5 @@ pub struct Details {
 pub struct ParseJobPayload {
     #[serde(rename = "JobHCL")]
     pub job_hcl: String,
-    pub canonicalize: bool
-
+    pub canonicalize: bool,
 }

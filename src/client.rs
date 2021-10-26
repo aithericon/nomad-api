@@ -1,5 +1,8 @@
-use crate::jobs::{Job, ListJobAllocationsResponse, Allocation, DispatchJobRequest, DispatchJobResponse, JobStopResponse, ParseJobPayload, CreateJobResponse, CreateJobRequest};
-use log::{debug, error, info, warn, trace};
+use crate::jobs::{
+    Allocation, CreateJobRequest, CreateJobResponse, DispatchJobRequest, DispatchJobResponse, Job,
+    JobStopResponse, ListJobAllocationsResponse, ParseJobPayload,
+};
+use log::{debug, info, trace};
 use reqwest::Client;
 use std::collections::HashMap;
 
@@ -39,8 +42,8 @@ impl NomadClient {
 
     /// https://www.nomadproject.io/api-docs/jobs#stop-a-job
     /// This endpoint deregisters a job, and stops all allocations part of it.
-    /// Method	    Path	            Produces
-    /// DELETE	    /v1/job/:job_id	    application/json
+    /// Method    Path            Produces
+    /// DELETE    /v1/job/:job_id    application/json
     pub async fn stop_job(&self, job_id: &str) -> Result<JobStopResponse, reqwest::Error> {
         let url = format!("{}/v1/job/{}", &self.base_url, job_id);
         trace!("Stop job {} call to {}", &url, job_id);
@@ -55,11 +58,13 @@ impl NomadClient {
         Ok(response)
     }
 
-
     /// https://www.nomadproject.io/api-docs/jobs#list-job-allocations
-    /// Method	Path	                        Produces
-    /// GET	    /v1/job/:job_id/allocations	    application/json
-    pub async fn list_job_allocations(&self, id: &str) -> Result<Vec<ListJobAllocationsResponse>, reqwest::Error> {
+    /// Method	Path                        Produces
+    /// GET    /v1/job/:job_id/allocations    application/json
+    pub async fn list_job_allocations(
+        &self,
+        id: &str,
+    ) -> Result<Vec<ListJobAllocationsResponse>, reqwest::Error> {
         let url = format!("{}/v1/job/{}/allocations", &self.base_url, id);
         trace!("ListJobAllocations call to {}", &url);
         let response = self
@@ -74,8 +79,8 @@ impl NomadClient {
     }
 
     /// https://www.nomadproject.io/api-docs/jobs#read-allocation
-    /// Method	Path	                        Produces
-    /// GET	    /v1/allocations/:alloc_id	    application/json
+    /// Method	Path                        Produces
+    /// GET    /v1/allocations/:alloc_id    application/json
     ///
     /// Parameters:
     /// :alloc_id (string: <required>)- Specifies the UUID of the allocation. This must be the full
@@ -90,14 +95,12 @@ impl NomadClient {
             .send()
             .await?;
         // info!("ReadAllocation: {:?}", &response);
-        let response = response.json::<Allocation>()
-            .await?;
+        let response = response.json::<Allocation>().await?;
         Ok(response)
     }
 
-
     /// https://www.nomadproject.io/api-docs/jobs#dispatch-job
-    /// Method	Path	                    Produces
+    /// Method	Path                    Produces
     /// POST	/v1/job/:job_id/dispatch	application/json
     ///
     /// Parameters
@@ -106,7 +109,12 @@ impl NomadClient {
     /// Payload (string: "") - Specifies a base64 encoded string containing the payload. This is limited to 16384 bytes (16KiB).
     ///
     /// Meta (meta<string|string>: nil) - Specifies arbitrary metadata to pass to the job.
-    pub async fn dispatch_job(&self, job: &str, payload: Option<String>, meta: HashMap<String, String>) -> Result<DispatchJobResponse, reqwest::Error> {
+    pub async fn dispatch_job(
+        &self,
+        job: &str,
+        payload: Option<String>,
+        meta: HashMap<String, String>,
+    ) -> Result<DispatchJobResponse, reqwest::Error> {
         let url = format!("{}/v1/job/{}/dispatch", &self.base_url, job);
         trace!("Dispatch job call to {}", &url);
         let request = DispatchJobRequest {
@@ -124,8 +132,7 @@ impl NomadClient {
             .send()
             .await?;
         // println!("{:?}", &response);
-        let response = response.json::<DispatchJobResponse>()
-           .await?;
+        let response = response.json::<DispatchJobResponse>().await?;
 
         Ok(response)
     }
@@ -160,8 +167,7 @@ impl NomadClient {
             .send()
             .await?;
         debug!("Response: {:?}", &response);
-        let response = response.json::<Job>()
-            .await?;
+        let response = response.json::<Job>().await?;
 
         Ok(response)
     }
@@ -190,9 +196,7 @@ impl NomadClient {
     pub async fn create_job(&self, job: &Job) -> Result<CreateJobResponse, reqwest::Error> {
         let url = format!("{}/v1/jobs", &self.base_url);
         trace!("Parse job call to {}", &url);
-        let request = CreateJobRequest {
-            job: job.clone(),
-        };
+        let request = CreateJobRequest { job: job.clone() };
 
         let test = serde_json::to_string(&request).unwrap();
         println!("{}", test);
@@ -205,10 +209,8 @@ impl NomadClient {
             .await?;
         info!("Response: {:?}", &response);
         println!("Response: {:?}", &response);
-        let response = response.json::<CreateJobResponse>()
-            .await?;
+        let response = response.json::<CreateJobResponse>().await?;
 
         Ok(response)
-
     }
 }
