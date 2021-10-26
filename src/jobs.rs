@@ -1,3 +1,5 @@
+#![allow(clippy::tabs_in_doc_comments)]
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::hash::Hash;

@@ -2,7 +2,7 @@
 mod tests {
     use nomad_api::client::NomadClient;
     use std::collections::HashMap;
-    use std::path::{Path};
+    use std::path::Path;
 
     #[tokio::test]
     async fn list_jobs() {

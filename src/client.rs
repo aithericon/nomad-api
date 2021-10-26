@@ -1,3 +1,5 @@
+#![allow(clippy::tabs_in_doc_comments)]
+
 use crate::jobs::{
     Allocation, CreateJobRequest, CreateJobResponse, DispatchJobRequest, DispatchJobResponse, Job,
     JobStopResponse, ListJobAllocationsResponse, ParseJobPayload,
