@@ -7,6 +7,9 @@ use crate::jobs::{
 use log::{debug, info, trace};
 use reqwest::Client;
 use std::collections::HashMap;
+use std::env::var;
+use std::fs::File;
+use std::io::Read;
 
 #[derive(Clone)]
 pub struct NomadClient {
@@ -17,8 +20,17 @@ pub struct NomadClient {
 
 impl NomadClient {
     pub fn new(base_url: String, authorization_token: String) -> Self {
+        let http_client = if let Ok(cert) = var("NOMAD_CACERT") {
+            let mut buf = Vec::new();
+            File::open(cert).unwrap().read_to_end(&mut buf).unwrap();
+            let cert = reqwest::Certificate::from_pem(&buf).unwrap();
+            Client::builder().add_root_certificate(cert).build().unwrap()
+        } else {
+            Client::new()
+        };
+
         Self {
-            http_client: Client::new(),
+            http_client,
             base_url,
             authorization_token,
         }
