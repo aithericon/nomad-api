@@ -24,7 +24,7 @@ impl NomadClient {
             let mut buf = Vec::new();
             File::open(cert).unwrap().read_to_end(&mut buf).unwrap();
             let cert = reqwest::Certificate::from_pem(&buf).unwrap();
-            Client::builder().add_root_certificate(cert).build().unwrap()
+            Client::builder().add_root_certificate(cert).danger_accept_invalid_certs(true).build().unwrap()
         } else {
             Client::new()
         };
